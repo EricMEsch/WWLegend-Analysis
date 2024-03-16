@@ -142,12 +142,25 @@ int read_out(string filename)
 int main(){
     
     // Open output file in corresponding directories
-    ofstream outfile{ "../Output/NeutronTagger/NeutronTemp/run.txt" };
+    ofstream outfile{ "/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/run.txt" };
+    ofstream Comparisonfile{ "/home/eric/sim/WWLegend/Output/NeutronTagger/OpticalOutput/ShowerIDs.txt" };
     // Read out each file for each thread into corresponding global arrays.
-    int counterGe = read_out("../Output/NeutronTagger/NeutronTemp/session_nt_Score_t0.csv");
-    counterGe = counterGe + read_out("../Output/NeutronTagger/NeutronTemp/session_nt_Score_t1.csv");
-    counterGe = counterGe + read_out("../Output/NeutronTagger/NeutronTemp/session_nt_Score_t2.csv");
-    counterGe = counterGe + read_out("../Output/NeutronTagger/NeutronTemp/session_nt_Score_t3.csv");
+    int counterGe = read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t0.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t1.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t2.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t3.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t4.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t5.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t6.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t7.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t8.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t9.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t10.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t11.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t12.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t13.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t14.csv");
+    counterGe = counterGe + read_out("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/session_nt_Score_t15.csv");
 
     int counterW = 0;
     int counterElse = 0;
@@ -156,9 +169,10 @@ int main(){
     int counterArg = 0;
     int counterGd = 0;
     
-    double radius = 3500; //radius of cryostat in mm
+    int total = 0;
+    int ID = 0;
+    double radius = 3499; //radius of cryostat in mm
     //Now todo: Print output and count captures
-
     for (size_t i = 0; i < AllIsotopes.size(); ++i)
     {
         const auto& innerVector = AllIsotopes[i];
@@ -175,7 +189,7 @@ int main(){
                 outfile << "1,";
                 // Check if capture is outside of cryostat so it was water. Otherwise could be moderator
                 double nradiussquare = AllNCaptureX[i][j] * AllNCaptureX[i][j] + AllNCaptureY[i][j] * AllNCaptureY[i][j];
-                if(nradiussquare > (radius * radius) || AllNCaptureZ[i][j] > 2500 || AllNCaptureZ[i][j] < -4500)
+                if(nradiussquare > (radius * radius) || AllNCaptureZ[i][j] > 2499 || AllNCaptureZ[i][j] < -4499)
                 {
                     counterW = counterW + 1;
                 }
@@ -210,9 +224,16 @@ int main(){
                 outfile << "4,";
                 counterElse = counterElse + 1;
             }
-            outfile << xPosition << "," << yPosition << "," << zPosition << endl;
+            outfile << xPosition << "," << yPosition << "," << zPosition << "," << Energy << "," << time << endl;
+            Comparisonfile << ID << "," << xPosition << "," << yPosition << "," << zPosition << "," << Energy << "," << time << endl;
+            total = total + 1;
         }
+        ID = ID + 1;
     }
+    outfile.close();
+    Comparisonfile.close();
+    outfile.open("/home/eric/sim/WWLegend/Output/NeutronTagger/NeutronTemp/run.mac");
+    outfile << "/run/beamOn " << total << endl;
     outfile.close();
     cout << "Amount of Ge Captures: " << counterGe << endl;
     cout << "Amount of Water Captures: " << counterW << endl;
